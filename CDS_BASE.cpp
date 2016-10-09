@@ -1139,41 +1139,7 @@ int BASE::CheckBoundary(std::vector<BODY> body, int i)
 
 
 
-/*
-void BASE::SetEffectiveRadius(MPI_Comm new_comm)
-{
-  // printf("IN EFFECTIVE RAD FUNCTION");
-   MPI_Comm_rank(new_comm, &my2drank);
-   MPI_Comm_size(new_comm, &size);
-   
 
-  for( auto i=N_start;i<N_start + nlocal_particles-1;i++)//(int)body->size()-1;i++)
-      {
-	for(size_t j=i+1; j<bd.size();j++) //Nparticles becos of verlet list
-	   {
-	   // if(((*body)[i].index==0)&&((*body)[j].index==0))
-	     // {
-	       //R12[i][j]=RR1small*2.0;
-
-	      //}
-	    if((bd[i].index==1)&&((bd[j].index==1)))
-	      {
-	       R12[i][j]=RR1big*2.0;
-	      }
-	   // if(((*body)[i].index==1)&&((*body)[j].index==0))
-	    //{
-	      //R12[i][j]=RR1big + RR1small;
-	    //}
-	    //if(((*body)[i].index==0)&&((*body)[j].index==1))
-	    //{
-	      //R12[i][j]=RR1big + RR1small;
-
-	    //}
-	 }
-     }
-
-}
-*/
 void BASE:: InsertList( ParticleList **root_list, ParticleList *i )
 {
 
