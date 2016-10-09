@@ -294,15 +294,7 @@ BASE::BASE()
    Fy.resize(Nparticles);
    Vx.resize(Nparticles);
    Vy.resize(Nparticles);
-   //Recv_bodies= new BODY[nlocal_particles];
-   //Send_bodies= new BODY[nlocal_particles];
-   //down_nbr_list.resize(nlocal_particles);
-   //right_nbr_list.resize(nlocal_particles);
-   //up_nbr_list.resize(nlocal_particles);
-   //left_nbr_list.resize(nlocal_particles);
-   //Virtual_list.resize(nlocal_particles);  
-   //Recv_bodies.resize(nlocal_particles);
-   //send_bodies.resize(nlocal_particles);
+   
    R12.resize(Nparticles);
    Dx.resize(Nparticles);
    Dy.resize(Nparticles);
@@ -1210,49 +1202,7 @@ void BASE::ParticleManager(MPI_Comm new_comm)
         displacement[i] = ((int)(i*nlocal_particles) + ((i < Nparticles%size ) ? i : (Nparticles%size)));       
      }
 
-   /*succ =(my2drank+1)%size;
-   pred =(my2drank-1+size)%size;
-   send_offset=N_start;//my2drank*nlocal_particles;
-   recv_offset=((my2drank-1+size)%size)*recvcounts[pred];
-   for(int i=0;i<size-1; i++)
-      {
-       MPI_Isend(&bd[send_offset], nlocal_particles, particletype, succ, 0, MPI_COMM_WORLD, &send_request);
-       MPI_Irecv(&bd[displacement[pred]], recvcounts[pred], particletype, pred, 0, MPI_COMM_WORLD, &recv_request);
-       send_offset=((my2drank-i-1+size)%size)*nlocal_particles;
-       recv_offset=((my2drank-i-2+size)%size)*nlocal_particles;
-       MPI_Wait(&send_request, &status);
-       MPI_Wait(&recv_request, &status);
- 
-      }
-   */
-   
-   
-        //MPI_Comm_rank(new_comm,&my2drank);
-       // MPI_Cart_coords(new_comm,my2drank,2,coords);
-        //MPI_Cart_shift( new_comm, 1, 1, &left_nbr, &right_nbr ); //move along x direction
-
-        //MPI_Isend(&bd[N_start], nlocal_particles,particletype, right_nbr, 0, new_comm, &send_request);
-        //MPI_Irecv(&bd[displacement[left_nbr]],recvcounts[left_nbr],particletype, left_nbr, 0,new_comm, &recv_request);
-       
-       // MPI_Wait(&send_request, &status);
-	//MPI_Wait(&recv_request, &status);
-       //compute force here
-	//MPI_Comm_rank(new_comm,&my2drank);
-        //MPI_Cart_coords(new_comm,my2drank,2,coords);
-        //MPI_Cart_shift( new_comm, 0, 1, &up_nbr, &down_nbr );
-       
-	//MPI_Isend(&bd[N_start], (nlocal_particles+recvcounts[left_nbr]),particletype, down_nbr, 0, new_comm, &send_request);
-        //MPI_Irecv(&bd[displacement[left_nbr]],recvcounts[left_nbr],particletype, left_nbr, 0,new_comm, &recv_request);
-     
-
-
-
-   
-
-
-
-
-   //for(int i=0;i<Virt)
+  //for(int i=0;i<Virt)
    if (size>1)
    {
      MPI_Allgatherv(bd+N_start, nlocal_particles,particletype, bd, recvcounts, displacement,particletype, new_comm );
@@ -1409,11 +1359,7 @@ void BASE::Coupling(MPI_Comm new_comm)
            } //end of particle loop
        fclose(fp);
    //computation equation 29
- // if(size>1)
-   // {
-     // MPI_Allgatherv(PHI_local_result, nlocalx*nlocaly,MPI_DOUBLE, POLYMER, recvcounts_polymer, disp_polymer,     MPI_DOUBLE, new_comm );
-   // }
-
+ 
      
    for(int i=0;i<nlocalx;i++)
       {
