@@ -1303,17 +1303,18 @@ void BASE::Coupling(MPI_Comm new_comm)
 	               D2 =-(1.0)*(D1*pow(R2,ALP1-2.0)/(pow(B1,2)))*B2;//<--check this
 		       //printf("X=%d, Y=%d\n", X,Y);
 		       POS[X][Y]=i;
-		       //PP3(X,Y)=PP3(X,Y) + B2*(POLYMER(X,Y)-P00);
+		       
 
-	               
+	               PPP_local[count]=PPP_local[count] + B2*(POLYMER(X,Y)-P00);
+
 		       //printf("Rank=%d, PP3[%d][%d]=%lf\n",my2drank, X, Y, PP3[X][Y]);
 		       if(R2<R1big)
 			 {
-                           PPP(X,Y)=1.0;
+                           PPP_local2[count]=1.0;
 			 }
 	              bd[i].TOT[0]+= -sigma*RX1*D2*pow((POLYMER(X,Y)-P00),2);
 	              bd[i].TOT[1]+= -sigma*RY1*D2*pow((POLYMER(X,Y)-P00),2);
-		       fprintf(fp, "%d  %lf   %lf\n",i, bd[i].TOT[0], bd[i].TOT[1]);
+		      fprintf(fp, "%d  %lf   %lf\n",i, bd[i].TOT[0], bd[i].TOT[1]);
 
 		      // printf("Rank=%d,  (X =%d, Y=%d,P3[%d][%d]=%lf) \n",my2drank,X, Y,X,Y, POLYMER(X,Y));
 		       //printf("Colloid (X =%d, Y=%d,TOTX=%lf,TOTY=%lf) \n",X, Y, bd[i].TOT[0],bd[i].TOT[1]);
@@ -1325,7 +1326,11 @@ void BASE::Coupling(MPI_Comm new_comm)
            } //end of particle loop
        fclose(fp);
    //computation equation 29
- 
+ MPI_Gather( PPP_local, nlocalx*nlocaly, MPI_DOUBLE, PP3, nlocalx*nlocaly, MPI_DOUBLE, 0, new_comm);
+ MPI_Gather( PPP_local2, nlocalx*nlocaly, MPI_DOUBLE, PPP, nlocalx*nlocaly, MPI_DOUBLE, 0, new_comm);
+MPI_Bcast(PP3, Nx*Ny, MPI_DOUBLE, 0, new_comm);
+MPI_Bcast(PPP, Nx*Ny, MPI_DOUBLE, 0, new_comm);
+
      
    for(int i=0;i<nlocalx;i++)
       {
@@ -1369,7 +1374,8 @@ void BASE::Coupling(MPI_Comm new_comm)
             int glob_index_x = i-3 + coords[0]*nlocalx;
 	    int glob_index_y = j-3 + coords[1]*nlocaly;
 
-            AP3=(1.0/6.0)*(P2(glob_index_x+1,glob_index_y )+P2(glob_index_x -1,glob_index_y ) + P2(glob_index_x ,glob_index_y +1) + P2(glob_index_x ,glob_index_y-1));
+             AP3=(1.0/6.0)*(P2(UPX[glob_index_x],glob_index_y )+P2(DOWNX[glob_index_x],glob_index_y ) + P2(glob_index_x ,UPX[glob_index_y]) + P2(glob_index_x ,DOWNX[glob_index_y]));
+
 	    BP3=(1.0/12.0)*(P2(glob_index_x-1,glob_index_y-1) + P2(glob_index_x-1,glob_index_y+1) + P2(glob_index_x+1, glob_index_y-1) + P2(glob_index_x+1,glob_index_y+1));
 	    CP4(i,j)=AP3 + BP3;
 	    //printf("CP4[%d][%d]=%lf\n", i,j, CP4(i,j));
